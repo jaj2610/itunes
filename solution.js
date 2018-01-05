@@ -15,11 +15,13 @@
  - Add more flexible styling for smaller screens
  - Allow more search parameters - track name, price ranges, genre, country, etc.
  - Add sorting options
+ - Add pagination
+ - Add translations (i18n) and accessibility features (contrast, keyboard commands, aria labels/roles)
 
 8. Click 'Update' from the top menu and share the link. */
 var app = angular.module('AlbumFinder', []);
 
-app.service('iTunesService', function() {
+app.service('iTunesService', function($http) {
   var API_BASE = 'https://itunes.apple.com/search?entity=album&term=';
   var artistName = 'ARTIST_NAME';
 
@@ -37,9 +39,18 @@ app.service('iTunesService', function() {
     var url = API_BASE + artist;
     console.log("Search request:", url);
 
-    return fetch(url).then((response) => response.json()).then(function(data) {
+    return $http.get(url).then(function(res) {
+        return res.data;
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    /*return fetch(url).then((response) => response.json()).then(function(data) {
       return data;
-    });
+    }).catch(function(error) {
+      console.log(error);
+    });*/
   }
 
 });
@@ -51,28 +62,23 @@ app.controller('AlbumsController', function($scope, iTunesService) {
   albumsVm.searchPhrase = "Jay Z"; // default fill-in
   albumsVm.isSearching = false;
   albumsVm.noResultsFound = false;
-  albumsVm.searchList = {};
+  albumsVm.searchList = [];
 
-  function startSearch(phrase) {
+  function startSearch() {
     // grab search param and pass to iTunesService to get data
 
     // reset values
     albumsVm.isSearching = true;
     albumsVm.noResultsFound = false;
-    albumsVm.searchList = {};
+    albumsVm.searchList = [];
 
-    iTunesService.searchAlbums(phrase).then(function(data) {
-        albumsVm.searchList = data.results;
-      })
-      .catch(function(error) {
-        console.log(error);
-      })
-      .finally(function() {
-        if (albumsVm.searchList.length === 0) {
-          albumsVm.noResultsFound = true;
-        }
-        albumsVm.isSearching = false;
-        console.log('finished!');
-      });
+    iTunesService.searchAlbums(albumsVm.searchPhrase).then(function(data) {
+      albumsVm.searchList = data.results;
+    }).finally(function() {
+      if (albumsVm.searchList.length === 0) {
+        albumsVm.noResultsFound = true;
+      }
+      albumsVm.isSearching = false;
+    });
   }
 });

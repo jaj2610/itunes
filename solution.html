@@ -1,6 +1,6 @@
 <div ng-app="AlbumFinder" ng-controller="AlbumsController as albumsController">
   <input type="text" placeholder="enter artist" ng-model="albumsController.searchPhrase">
-  <button ng-click="albumsController.startSearch(albumsController.searchPhrase)" ng-disabled="albumsController.isSearching">Search</button>
+  <button ng-click="albumsController.startSearch()" ng-disabled="albumsController.isSearching">Search</button>
   <div class="albums-container">
 
     <div ng-show="albumsController.isSearching">Searching...</div>
