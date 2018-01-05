@@ -1,0 +1,26 @@
+<div ng-app="AlbumFinder" ng-controller="AlbumsController as albumsController">
+  <input type="text" placeholder="enter artist" ng-model="albumsController.searchPhrase">
+  <button ng-click="albumsController.startSearch(albumsController.searchPhrase)" ng-disabled="albumsController.isSearching">Search</button>
+  <div class="albums-container">
+
+    <div ng-show="albumsController.isSearching">Searching...</div>
+    <div ng-show="!albumsController.isSearching && albumsController.noResultsFound">No Results Found :(</div>
+    <table ng-show="albumsController.searchList.length > 0 && !albumsController.isSearching">
+      <thead>
+        <tr>
+          <th>Cover</th>
+          <th>Track</th>
+          <th>Artist</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in albumsController.searchList">
+          <td><img ng-src="{{item.artworkUrl60}}" /></td>
+          <td>{{item.collectionName}}</td>
+          <td>{{item.artistName}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
